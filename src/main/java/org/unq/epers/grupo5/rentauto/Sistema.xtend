@@ -6,12 +6,18 @@ import org.unq.epers.grupo5.rentauto.exceptions.NuevaPasswordInvalidaException
 import org.unq.epers.grupo5.rentauto.exceptions.ValidacionException
 import org.unq.epers.grupo5.rentauto.persistence.Database
 import org.unq.epers.grupo5.rentauto.persistence.UsuarioHome
+import org.unq.epers.grupo5.rentauto.exceptions.EntidadYaExisteException
+import org.unq.epers.grupo5.rentauto.exceptions.UsuarioYaExisteException
 
 class Sistema {
 	val home = new UsuarioHome()
 	
 	def void registrar(Usuario usuario) {
-		home.insert(usuario)
+		try {
+			home.insert(usuario)			
+		} catch (EntidadYaExisteException e) {
+			throw new UsuarioYaExisteException
+		}
 	}
 	
 	def void validarCuenta(Usuario usuario, String codigoValidacion) {

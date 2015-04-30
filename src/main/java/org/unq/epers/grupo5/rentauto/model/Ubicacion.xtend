@@ -10,6 +10,11 @@ class Ubicacion {
 	new(String nombre){
 		this.nombre = nombre
 	}
+	
+	new() {
+		
+	}
+	
 }
 
 @Accessors 

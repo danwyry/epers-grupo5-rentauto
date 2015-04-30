@@ -1,13 +1,13 @@
 package org.unq.epers.grupo5.rentauto.persistence
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.util.List
-import org.unq.epers.grupo5.rentauto.exceptions.EntidadNoExisteException
 import org.unq.epers.grupo5.rentauto.entities.Entity
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import org.unq.epers.grupo5.rentauto.exceptions.UsuarioYaExisteException
+import org.unq.epers.grupo5.rentauto.exceptions.EntidadNoExisteException
+import org.unq.epers.grupo5.rentauto.exceptions.EntidadYaExisteException
 
 abstract class SqlBasedHome<TEntity extends Entity> {
 	static val UNIQUE_KEY_VIOLATION_CODE = 1062
@@ -71,7 +71,7 @@ abstract class SqlBasedHome<TEntity extends Entity> {
 			statement.close		
 		} catch (MySQLIntegrityConstraintViolationException e) {  
 			if (e.errorCode == UNIQUE_KEY_VIOLATION_CODE)
-				throw new UsuarioYaExisteException(e)			
+				throw new EntidadYaExisteException(e)			
 			else 
 				throw e
 		}
