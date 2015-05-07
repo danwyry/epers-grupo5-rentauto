@@ -20,6 +20,29 @@
        <column name="ANIO" not-null="false" unique="false"/>
     </property>
 
+    <property name="patente" type="int">
+       <column name="PATENTE" not-null="false" unique="false"/>
+    </property>
+
+    <property name="costoBase" type="int">
+       <column name="COSTO_BASE" not-null="false" unique="false"/>
+    </property>
+    
+    <property name="categoria" type="int">
+       <column name="CATEGORIA" not-null="false" unique="false"/>
+    </property>
+
+    <property name="ubicacionInicial" type="int">
+       <column name="UBICACION_INICIAL" not-null="false" unique="false"/>
+    </property>
+    
+	<list name="reservas" table="PosicionFormacionStrategy" >
+		<key column="formacionStrategy"></key>
+		<index column="indice" />
+		<element type="Posicion" column="posicion"/>
+    </list>
+    
+
 
   </class>
 </hibernate-mapping>

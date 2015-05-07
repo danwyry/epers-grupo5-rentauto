@@ -1,7 +1,7 @@
 package org.unq.epers.grupo5.rentauto.daos
 
 abstract class Dao<T> {
-		private val Class daoClass ;  
+		protected val Class daoClass ;  
 
 		new (Class daoClass) {
 			this.daoClass = daoClass

@@ -1,10 +1,10 @@
 package org.unq.epers.grupo5.rentauto.daos
 
+import org.eclipse.xtext.xbase.lib.Functions.Function0
 import org.hibernate.SessionFactory
 import org.hibernate.Transaction
 import org.hibernate.cfg.Configuration
 import org.hibernate.classic.Session
-import org.unq.epers.grupo5.rentauto.servicios.Operation
 
 class SessionManager {
 		
@@ -22,7 +22,7 @@ class SessionManager {
 		return sessionFactory;
 	}
 	
-	def static <T> T runInSession(Operation<T> cmd){
+	def static <T> T runInSession(Function0<T> cmd){
 		var SessionFactory sessionFactory = SessionManager.getSessionFactory();
 		var Transaction transaction = null;
 		var T result = null;
@@ -34,7 +34,7 @@ class SessionManager {
 
 			tlSession.set(session);
 			
-			result = cmd.execute();
+			result = cmd.apply();
 
 			session.flush();
 			transaction.commit();
