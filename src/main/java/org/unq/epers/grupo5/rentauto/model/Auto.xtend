@@ -6,6 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 class Auto {
+	int id
 	String marca
 	String modelo
 	Integer anio

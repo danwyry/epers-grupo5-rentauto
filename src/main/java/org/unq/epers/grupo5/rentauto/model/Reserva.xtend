@@ -9,6 +9,7 @@ import static  org.unq.epers.grupo5.rentauto.extensions.DateExtensions.*
 
 @Accessors
 class Reserva {
+	int id
 	Integer numeroSolicitud
 	Ubicacion origen
 	Ubicacion destino
