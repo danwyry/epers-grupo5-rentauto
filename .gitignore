@@ -63,3 +63,4 @@ release.properties
 
 #####=== Application ===#####
 db.properties
+src/test/java/org/unq/epers/grupo5/rentauto/DummyTest.xtend
