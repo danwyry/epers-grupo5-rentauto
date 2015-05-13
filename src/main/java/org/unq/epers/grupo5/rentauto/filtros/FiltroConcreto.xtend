@@ -2,17 +2,16 @@ package org.unq.epers.grupo5.rentauto.filtros
 
 import org.unq.epers.grupo5.rentauto.filtros.Filtro
 
-abstract class FiltroUnario extends Filtro {
+abstract class FiltroConcreto extends Filtro {
 	
-	Filtro filtro ; 
-	
+	protected val Filtro filtro 
+
 	new (Filtro filtro) {
 		this.filtro = filtro
 	}
-	
+
 	override query() {
-		operador + " (" filtro.query + ")"
+		filtro.query
 	}
 	
-	abstract def String operador(); 
 }
