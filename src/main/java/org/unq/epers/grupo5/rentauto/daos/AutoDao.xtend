@@ -1,6 +1,7 @@
 package org.unq.epers.grupo5.rentauto.daos
 
 import java.util.Date
+import org.hibernate.Query
 import org.hibernate.classic.Session
 import org.unq.epers.grupo5.rentauto.model.Auto
 import org.unq.epers.grupo5.rentauto.model.Ubicacion
@@ -10,48 +11,39 @@ class AutoDao extends Dao<Auto> {
 		super(new Auto.class)
 	}
 	
-	def findByCriteria() {
-	
-	}
-	
 	def void DisponiblesEnUbicacionUnDia(Ubicacion ubicacion, Date dia)
 	{
 		var Session sess = SessionManager.sessionFactory.currentSession;
-		sess .createQuery("
-			 from Auto as auto
-				where 
-					not (auto.reservas.inicio <= ? and auto.reservas.fin >= ?)
-					and (
-					)						
+		var Query q = sess.createQuery("
+			from Auto as auto
+			left join Reservas as reservas 
+			where 
+			-- AUTOS QUE NO TENGAN NINGUNA RESERVA 
+			( 
+				reservas.id is null	and auto.ubicacion_inicial = :ubicacion	
+			) or ( 
+				auto.id in (
+					-- AUTOS CUYA ULTIMA UIBCACION FUE :ubicacionReserva
+					select fRes.auto_id
+					from Reservas as fRes
+					where 		fRes.destino == :ubicacionReserva
+							and fRes.fin = (
+								select max(fRes2.fin) as reserva_id 
+								from Reservas as fRes2 
+								where 	fRes2.fin < :diaReserva
+									and fRes2.auto_id = fRes.auto_id
+							)
+				)
+				and auto.id not in (
+					-- AUTOS QUE NO TENGAN RESERVA EN :diaReserva
+					select fRes3.auto_id
+					auto.Reservas as fRes3 
+					where 		fRes3.inicio <= :diaReserva 
+							and fRes3.fin 	>= :diaReserva
+				)
+			)
 		")
+		
+		list
 	}
-	
-	
-	/* 
-	def seSuperpone(Date desde, Date hasta){
-		if(inicio <= desde && desde <= fin )
-			return true
-		if(inicio <= hasta && hasta <= fin )
-			return true
-		if(desde <= inicio && fin <= hasta)
-			return true
-			
-		return false	
-	}
-
- 	def ubicacionParaDia(Date unDia){
-		val encontrado = reservas.findLast[ it.fin <= unDia ]
-		if(encontrado != null){
-			return encontrado.destino
-		}else{
-			return ubicacionInicial
-		}
-	}
-	 
-	  .createCriteria(Cat.class)
-    .add( Restrictions.like("name", "Fritz%") )
-    .add( Restrictions.between("weight", minWeight, maxWeight) )
-    .list();*/
-    
-	
 }
