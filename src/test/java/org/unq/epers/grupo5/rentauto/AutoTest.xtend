@@ -80,16 +80,42 @@ class AutoTest {
 	}
 
 	@Test
-	def testAutosDisponiblesEnUbicacionYDia() 
+	def testAutosDisponiblesEnUbicacionYDia_SiNoHayReservasDevuelveLosQueCoincidenConUbicacionInicial() 
 	{
-		autoMgr.reservar(bmw,usuario,2,ranelagh,bera,new Date(2015,3,5), new Date(2015,3,8))		
-
-		val resultado = autoMgr.autosDisponiblesEnUbicacionYDia(bera, new Date(2015,9,7))
-
+		var resultado = autoMgr.autosDisponiblesEnUbicacionYDia(ranelagh, new Date(2015,9,7))
 		assertTrue(	autoEnResultado(bmw, resultado) )
+		assertFalse(	autoEnResultado(ferrari, resultado) )
+		assertFalse(	autoEnResultado(torino, resultado) )
+
+		resultado = autoMgr.autosDisponiblesEnUbicacionYDia(bera, new Date(2015,9,7))
+		assertFalse(	autoEnResultado(bmw, resultado) )
 		assertTrue(	autoEnResultado(ferrari, resultado) )
 		assertFalse(	autoEnResultado(torino, resultado) )
+		
+		resultado = autoMgr.autosDisponiblesEnUbicacionYDia(quilmes, new Date(2015,9,7))
+		assertFalse(	autoEnResultado(bmw, resultado) )
+		assertFalse(	autoEnResultado(ferrari, resultado) )
+		assertTrue(		autoEnResultado(torino, resultado) )
+
 	}
+
+
+	@Test
+	def testAutosDisponiblesEnUbicacionYDia_SiHayReservasEnFechaNoLosTrae() 
+	{
+		autoMgr.reservar(bmw,usuario,2,ranelagh,bera,new Date(2015,9,5), new Date(2015,9,8))		
+		var resultado = autoMgr.autosDisponiblesEnUbicacionYDia(ranelagh, new Date(2015,9,7))
+		assertFalse(	autoEnResultado(bmw, resultado) )
+	}
+
+	@Test
+	def testAutosDisponiblesEnUbicacionYDia_SiLaReservaAnteriorCoincideConDestinoSILosTrae() 
+	{
+		autoMgr.reservar(bmw,usuario,2,ranelagh,ranelagh,new Date(2015,9,5), new Date(2015,9,6))		
+		var resultado = autoMgr.autosDisponiblesEnUbicacionYDia(ranelagh, new Date(2015,9,7))
+		assertTrue(	autoEnResultado(bmw, resultado) )
+	}
+
 
 	@Test
 	def testAutosDisponiblesParaReservarEn_SiNoHayReservasDevuelveLosQueCoincidenConUbicacionInicialYCategoria()

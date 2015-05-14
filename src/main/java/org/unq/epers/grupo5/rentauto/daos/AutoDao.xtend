@@ -22,29 +22,17 @@ class AutoDao extends Dao<Auto> {
 		var Session sess = SessionManager.getSession();
 		var Query q = sess.createQuery("
 			from Auto as auto
-		 	left join fetch auto.reservas as reservas 
+		 	left join fetch auto.reservas as reserva 
 			where 
-			( 
-				reservas.id is null	and auto.ubicacionInicial = :ubicacion	
-			) or ( 
-				auto in (
-					select fRes.auto
-					from Reserva as fRes
-					where 		fRes.destino = :ubicacion
-							and fRes.fin = (
-								select max(fRes2.fin) as reserva_id 
-								from Reserva as fRes2 
-								where 	fRes2.fin < :diaReserva
-									and fRes2.auto = fRes.auto
-							)
+				(reserva is null and auto.ubicacionInicial = :ubicacion) or
+				(reserva is not null and 
+					(reserva.inicio >:diaReserva or reserva.fin < :diaReserva )
+					and (reserva.fin != (select max(fRes2.fin) 
+							from Reserva as fRes2 
+							where 	fRes2.fin < :diaReserva
+									and fRes2.auto = auto
+								)  or reserva.destino = :ubicacion)
 				)
-				and auto not in (
-					select fRes3.auto
-					from Reserva as fRes3 
-					where 		fRes3.inicio <= :diaReserva 
-							and fRes3.fin 	>= :diaReserva
-				)
-			)
 		")
 
 		q.setParameter("ubicacion", ubicacion)
