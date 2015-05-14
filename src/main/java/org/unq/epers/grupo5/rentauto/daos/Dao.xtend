@@ -11,8 +11,9 @@ abstract class Dao<T> {
 		 return  SessionManager.getSession().get(this.daoClass,id) as T;
 	}
 
-	def void save(T j) {
-		SessionManager.getSession().saveOrUpdate(j);
+	def save(T e) {
+		SessionManager.getSession().saveOrUpdate(e);
+		e
 	}
 	
 }

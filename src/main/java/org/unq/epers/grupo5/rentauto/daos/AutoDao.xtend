@@ -18,39 +18,36 @@ class AutoDao extends Dao<Auto> {
 	
 	def List<Auto> disponiblesEnUbicacionUnDia(Ubicacion ubicacion, Date dia)
 	{
-		var Session sess = SessionManager.sessionFactory.currentSession;
+		var Session sess = SessionManager.getSession();
 		var Query q = sess.createQuery("
 			from Auto as auto
-			left join Reservas as reservas 
+		 	left join fetch auto.reservas as reservas 
 			where 
-			-- AUTOS QUE NO TENGAN NINGUNA RESERVA 
 			( 
-				reservas.id is null	and auto.ubicacion_inicial = :ubicacion	
+				reservas.id is null	and auto.ubicacionInicial = :ubicacion	
 			) or ( 
-				auto.id in (
-					-- AUTOS CUYA ULTIMA UIBCACION FUE :ubicacionReserva
-					select fRes.auto_id
-					from Reservas as fRes
-					where 		fRes.destino == :ubicacionReserva
+				auto in (
+					select fRes.auto
+					from Reserva as fRes
+					where 		fRes.destino = :ubicacion
 							and fRes.fin = (
 								select max(fRes2.fin) as reserva_id 
-								from Reservas as fRes2 
+								from Reserva as fRes2 
 								where 	fRes2.fin < :diaReserva
-									and fRes2.auto_id = fRes.auto_id
+									and fRes2.auto = fRes.auto
 							)
 				)
-				and auto.id not in (
-					-- AUTOS QUE NO TENGAN RESERVA EN :diaReserva
-					select fRes3.auto_id
-					auto.Reservas as fRes3 
+				and auto not in (
+					select fRes3.auto
+					from Reserva as fRes3 
 					where 		fRes3.inicio <= :diaReserva 
 							and fRes3.fin 	>= :diaReserva
 				)
 			)
 		")
 
-		q.setInteger(":ubicacionReserva", ubicacion.id)
-		q.setDate(":diaReserva" , dia)
+		q.setParameter("ubicacion", ubicacion)
+		q.setParameter("diaReserva" , dia)
 		q.list
 	}
 }

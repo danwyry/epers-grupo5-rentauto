@@ -54,4 +54,8 @@ class SessionManager {
 	def static Session getSession() {
 		return tlSession.get();
 	}
+
+	def static truncate(){
+		sessionFactory = null
+	}
 }

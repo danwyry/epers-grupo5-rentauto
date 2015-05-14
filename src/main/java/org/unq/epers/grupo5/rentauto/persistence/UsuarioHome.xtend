@@ -30,7 +30,7 @@ class UsuarioHome extends SqlBasedHome<Usuario> {
 		stmt.setString(3, entity.username)
 		stmt.setString(4, entity.password)
 		stmt.setString(5, entity.email)
-		stmt.setDate(6, entity.nacimiento)
+		// stmt.setDate(6, entity.nacimiento) // lo sacamos por un error que estaba generando ya que esto deja de usarse para el tp a partir de la parte 2 
 		stmt.setString(7, entity.codigo_validacion)
 		stmt.setBoolean(8, entity.is_validado)
 	}

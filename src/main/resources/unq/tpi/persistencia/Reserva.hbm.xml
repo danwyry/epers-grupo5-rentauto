@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.unq.epers.grupo5.rentauto.model.Reserva" discriminator-value="Reserva"
+		table="reservas">
+		
+		<id column="R_ID" name="id" type="integer">
+      		<generator class="increment" />
+      	</id>
+      	
+      	<discriminator column="DISCRIMINADOR" type="string"/>
+      	
+		<property name="numeroSolicitud" type="integer">
+			<column name="R_NUMSOLICITUD" length="20" not-null="true" unique="true" />
+		</property>
+
+		<many-to-one name="origen"
+			class="org.unq.epers.grupo5.rentauto.model.Ubicacion"
+			column="Ub_ID_Origen"
+			unique="false"
+			not-null="true" cascade="all" />
+		<many-to-one name="destino"
+			class="org.unq.epers.grupo5.rentauto.model.Ubicacion"
+			column="Ub_ID_Destino"
+			unique="false"
+			not-null="true"
+			cascade="all" />
+		<property name="inicio" type="date">
+			<column name="R_INICIO" length="20" not-null="true" unique="false" />
+		</property>
+		<property name="fin" type="date">
+			<column name="R_FIN" length="20" not-null="true" unique="false" />
+		</property>
+    	<many-to-one name="auto"
+			column="A_ID"
+			not-null="false"
+      		update="false"
+      		lazy="false"
+			cascade="all" />    
+		<many-to-one name="usuario"
+			column="U_ID"
+      		update="false"
+			not-null="true"
+			cascade="all" />
+				
+		<subclass name="org.unq.epers.grupo5.rentauto.model.ReservaEmpresarial" extends="org.unq.epers.grupo5.rentauto.model.Reserva" discriminator-value="ReservaEmpresarial">
+<!-- 			<property name="empresa" type="date"> -->
+<!-- 				<column name="RE_Empresa" length="20" not-null="true" unique="false" /> -->
+<!-- 			</property> -->
+			<property name="nombreContacto" type="string">
+				<column name="RE_NOMBRECONTACTO" length="40" not-null="false" unique="false" />
+			</property>
+			<property name="cargoContacto" type="string">
+				<column name="RE_CARGOCONTACTO" length="40" not-null="false" unique="false" />
+			</property>			
+		</subclass>
+	</class>
+</hibernate-mapping>
+

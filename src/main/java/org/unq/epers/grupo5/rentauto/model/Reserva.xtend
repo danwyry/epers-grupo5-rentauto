@@ -6,6 +6,7 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 
 import static  org.unq.epers.grupo5.rentauto.extensions.DateExtensions.*
+import org.unq.epers.grupo5.rentauto.entities.Usuario
 
 @Accessors
 class Reserva {
@@ -16,7 +17,19 @@ class Reserva {
 	Date inicio
 	Date fin
 	Auto auto
-	IUsuario usuario
+	Usuario usuario
+
+	new () {}
+ 
+	new(int numeroSolicitud, Ubicacion origen, Ubicacion destino , Date inicio, Date fin , Auto auto, Usuario usuario) {
+		this.numeroSolicitud = numeroSolicitud
+		this.origen = origen 
+		this.destino = destino 
+		this.inicio = inicio 
+		this.fin = fin 
+		this.auto = auto 
+		this.usuario = usuario
+	}
 
 	def costo() {
 		val cantidadDeDias = Days.daysBetween(new DateTime(inicio), new DateTime(fin)).days

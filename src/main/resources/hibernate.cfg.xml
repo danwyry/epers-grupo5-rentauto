@@ -11,17 +11,15 @@
         <property name="hibernate.connection.password">epers</property>
 
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-        <property name="hibernate.hbm2ddl.auto">validate</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
         <property name="show_sql">true</property>
 
-        <mapping class="org.unq.epers.grupo5.rentauto.model.Auto" ></mapping>
-		<mapping class="org.unq.epers.grupo5.rentauto.model.Deportivo" ></mapping>
-		<mapping class="org.unq.epers.grupo5.rentauto.model.Familiar" ></mapping>
-		<mapping class="org.unq.epers.grupo5.rentauto.model.Reserva" ></mapping>
-		<mapping class="org.unq.epers.grupo5.rentauto.model.TodoTerreno" ></mapping>
-		<mapping class="org.unq.epers.grupo5.rentauto.model.Turismo" ></mapping>
-		<mapping class="org.unq.epers.grupo5.rentauto.model.Ubicacion" ></mapping>
-		<mapping class="org.unq.epers.grupo5.rentauto.entities.Usuario" ></mapping>
+		<mapping resource="unq/tpi/persistencia/Ubicacion.hbm.xml"></mapping>		
+		<mapping resource="unq/tpi/persistencia/Categoria.hbm.xml"></mapping>
+		<mapping resource="unq/tpi/persistencia/Reserva.hbm.xml"></mapping>
+		<mapping resource="unq/tpi/persistencia/Auto.hbm.xml"></mapping>		
+		<mapping resource="unq/tpi/persistencia/Usuario.hbm.xml"></mapping>
+		<mapping resource="unq/tpi/persistencia/Empresa.hbm.xml"></mapping>	
 
     </session-factory>
 </hibernate-configuration>

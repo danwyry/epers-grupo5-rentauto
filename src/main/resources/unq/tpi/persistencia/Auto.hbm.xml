@@ -1,48 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
- 
+
 <hibernate-mapping>
-  <class name="org.unq.epers.grupo5.rentauto.model.Auto" table="AUTO">
-  	<id name='id' column='ID' type='java.lang.Integer' >
-      <generator class="identity" />
-  	</id>
+	<class name="org.unq.epers.grupo5.rentauto.model.Auto" table="autos" >
+		
+		<id column="A_ID" name="id" type="integer">
+      		<generator class="increment" />
+      	</id>
+      	
+		<property name="patente" type="string">
+			<column name="A_PATENTE" length="20" not-null="true" unique="true" />
+		</property>
 
-    <property name="marca" type="string">
-      <column name="MARCA" length="20" not-null="true" unique="false" />
-    </property>
-                
-    <property name="modelo" type="string">
-      <column name="MODELO" length="20" not-null="true" unique="false" />
-    </property>
-    
-    <property name="anio" type="int">
-       <column name="ANIO" not-null="false" unique="false"/>
-    </property>
+		<property name="marca" type="string">
+			<column name="A_MARCA" length="20" not-null="false" unique="false" />
+		</property>
+		<property name="modelo" type="string">
+			<column name="A_MODELO" length="20" not-null="false" unique="false" />
+		</property>
 
-    <property name="patente" type="int">
-       <column name="PATENTE" not-null="false" unique="false"/>
-    </property>
+		<property name="anio" type="integer">
+			<column name="A_ANIO" length="20" not-null="false" unique="false" />
+		</property>
+		<property name="costoBase" type="double">
+			<column name="A_COSTOBASE" length="20" not-null="false"
+				unique="false" />
+		</property>
+		<many-to-one name="categoria"
+			class="org.unq.epers.grupo5.rentauto.model.Categoria"
+			column="C_ID" unique="false" not-null="false" cascade="all" />
 
-    <property name="costoBase" type="int">
-       <column name="COSTO_BASE" not-null="false" unique="false"/>
-    </property>
-    
-    <property name="categoria" type="int">
-       <column name="CATEGORIA" not-null="false" unique="false"/>
-    </property>
-
-    <property name="ubicacionInicial" type="int">
-       <column name="UBICACION_INICIAL" not-null="false" unique="false"/>
-    </property>
-    
-	<list name="reservas" table="PosicionFormacionStrategy" >
-		<key column="formacionStrategy"></key>
-		<index column="indice" />
-		<element type="Posicion" column="posicion"/>
-    </list>
-    
-
-
-  </class>
+		<bag name="reservas" cascade="all">
+			<key column="A_ID" />
+			<one-to-many
+				class="org.unq.epers.grupo5.rentauto.model.Reserva" />
+		</bag>
+		<many-to-one name="ubicacionInicial"
+			class="org.unq.epers.grupo5.rentauto.model.Ubicacion"
+			column="Ub_ID" unique="false" not-null="false" cascade="all" />			
+	</class>
 </hibernate-mapping>
+
