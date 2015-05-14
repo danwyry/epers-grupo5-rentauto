@@ -10,6 +10,7 @@ import org.unq.epers.grupo5.rentauto.filtros.FiltroConcreto
 import org.unq.epers.grupo5.rentauto.filtros.FiltroOr
 import org.unq.epers.grupo5.rentauto.filtros.FiltroSimple
 import org.unq.epers.grupo5.rentauto.filtros.FiltroAnd
+import org.unq.epers.grupo5.rentauto.model.Categoria
 
 class AutoDao extends Dao<Auto> {
 	new () {
@@ -50,44 +51,72 @@ class AutoDao extends Dao<Auto> {
 		q.setParameter("diaReserva" , dia)
 		q.list
 	}
+	
+	
+	def List<Auto> disponiblesParaReservarEn(Ubicacion origen, Ubicacion destino, Date inicio , Date fin , Categoria categoria)
+	{
+		var Session sess = SessionManager.getSession() 
+		var Query q = sess.createQuery("
+			from Auto as auto
+		 	left join fetch auto.reservas as reservas 
+			where 
+			auto.categoria = :categoria 
+			and (
+				( 
+					reservas.id is null	and auto.ubicacionInicial = :origen	
+				) or ( 
+					auto in (
+						select fRes.auto
+						from Reserva as fRes
+						where 		fRes.destino = :origen
+								and fRes.fin = (
+									select max(fRes2.fin) as reserva_id 
+									from Reserva as fRes2 
+									where 	fRes2.fin < :inicio
+										and fRes2.auto = fRes.auto
+								)
+					)
+					and (
+						auto in (
+							select fRes3.auto
+							from Reserva as fRes3
+							where 		fRes3.origen = :destino
+									and fRes3.inicio = (
+										select min(fRes4.inicio)  
+										from Reserva as fRes4 
+										where 	fRes4.inicio > :fin
+											and fRes4.auto = fRes3.auto
+									)
+						) or auto not in (
+							select fRes5.auto
+							from Reserva as fRes5
+							where fRes5.inicio > :fin
+						)
+					)
+					and auto not in (
+						select fRes6.auto
+						from Reserva as fRes6 
+						where 		:inicio between fRes6.inicio and fRes6.fin 	
+								or  :fin between fRes6.inicio and fRes6.fin
+					)
+				)
+			)
+		")
+		q.setParameter ('categoria', categoria)
+		q.setParameter ('origen', origen)
+		q.setParameter ('destino', destino)
+		q.setParameter ('inicio', inicio)
+		q.setParameter ('fin', fin)
+		q.list
+	}
 }
 
 
 
-class FiltroAutoDisponibleEnUbicacionYFecha extends FiltroConcreto {
+/*class FiltroAutoDisponibleEnUbicacionYFecha extends FiltroConcreto {
 	new () {
 		super(
-			new FiltroOr(
-				new FiltroAnd( //-- AUTOS QUE NO TENGAN NINGUNA RESERVA 
-					new FiltroSimple("reservas.id is null"), 
-					new FiltroSimple("auto.ubicacion_inicial = :ubicacion")
-				), 
-				
-				new FiltroAnd( //-- AUTOS CUYA ULTIMA UIBCACION HASTA :diaReserva FUE :ubicacionReserva
-					new FiltroSimple("
-						auto.id in (
-							select fRes.auto_id
-							from Reservas as fRes
-							where 		fRes.destino == :ubicacionReserva
-									and fRes.fin = (
-										select max(fRes2.fin) as reserva_id 
-										from Reservas as fRes2 
-										where 	fRes2.fin < :diaReserva
-											and fRes2.auto_id = fRes.auto_id
-									)
-						)"), 
-					new FiltroSimple("
-						auto.id not in (
-							-- AUTOS QUE NO TENGAN RESERVA EN :diaReserva
-							select fRes3.auto_id
-							auto.Reservas as fRes3 
-							where 		fRes3.inicio <= :diaReserva 
-									and fRes3.fin 	>= :diaReserva
-						)")
-				
-				)
-			)
 		)
 	}
 
-}
+}*/
